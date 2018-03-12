@@ -5,7 +5,17 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.widget.Toast;
+
+import com.cloudinary.android.MediaManager;
+import com.cloudinary.android.callback.ErrorInfo;
+import com.cloudinary.android.callback.UploadCallback;
+import com.cloudinary.android.policy.TimeWindow;
+
+import java.io.StringBufferInputStream;
+import java.util.HashMap;
+import java.util.Map;
 
 import life.knowledge4.videotrimmer.K4LVideoTrimmer;
 import life.knowledge4.videotrimmer.interfaces.OnK4LVideoListener;
@@ -52,6 +62,36 @@ public class TrimmerActivity extends AppCompatActivity implements OnTrimVideoLis
     @Override
     public void getResult(final Uri uri) {
         mProgressDialog.cancel();
+
+
+
+        String requestId = MediaManager.get().upload(uri.getPath()).constrain(TimeWindow.immediate()).option("resource_type","video").callback(new UploadCallback() {
+            @Override
+            public void onStart(String requestId) {
+                Log.d("video","onStart");
+            }
+            @Override
+            public void onProgress(String requestId, long bytes, long totalBytes) {
+
+                float percent = (bytes * 100.0f) / totalBytes;
+              
+                Log.d("video","onProgress "+percent);
+            }
+            @Override
+            public void onSuccess(String requestId, Map resultData) {
+                Log.d("video","onSuccess");
+
+            }
+            @Override
+            public void onError(String requestId, ErrorInfo error) {
+                Log.d("video","onError "+error.getDescription());
+            }
+            @Override
+            public void onReschedule(String requestId, ErrorInfo error) {
+                Log.d("video","onReschedule");
+            }})
+                .unsigned("unsigned").dispatch();
+
 
         runOnUiThread(new Runnable() {
             @Override

@@ -15,6 +15,8 @@ import android.view.View;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
+import com.cloudinary.android.MediaManager;
+
 import life.knowledge4.videotrimmer.utils.FileUtils;
 
 public class MainActivity extends AppCompatActivity {
@@ -47,6 +49,9 @@ public class MainActivity extends AppCompatActivity {
                 }
             });
         }
+
+        MediaManager.init(this);
+
     }
 
     private void openVideoCapture() {
